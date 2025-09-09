@@ -75,7 +75,7 @@
                 <div class="mt-10 block sm:hidden overflow-x-auto">
                     <div class="flex space-x-4 pb-4">
                         @foreach(\App\Models\Vehicle::where('is_available', true)->get() as $vehicle)
-                            <div class="min-w-[250px] bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0 hover:scale-105 transition-transform duration-300">
+                            <div class="w-[80vw] max-w-[300px] bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0 hover:scale-105 transition-transform duration-300">
                                 <img src="{{ asset('storage/' . $vehicle->image) }}" alt="{{ $vehicle->name }}" class="w-full h-48 object-cover">
                                 <div class="p-4">
                                     <h3 class="text-lg font-medium text-gray-900">{{ $vehicle->name }}</h3>

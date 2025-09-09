@@ -14,6 +14,15 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            keyframes: {
+                'shadow-pulse': {
+                    '0%, 100%': { boxShadow: '0 0 0px rgba(0, 98, 255, 0.7)' },
+                    '50%': { boxShadow: '0 0 20px rgba(0, 98, 255, 0.7)' },
+                },
+            },
+            animation: {
+                'shadow-pulse': 'shadow-pulse 2s ease-in-out infinite',
+            },
         },
     },
 

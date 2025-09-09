@@ -1,11 +1,24 @@
 <div>
     <!-- Feedback Button -->
-    <button 
+    <!-- <button 
         wire:click="toggleForm" 
         class="fixed bottom-6 right-6 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transition z-50 font-semibold">
         Feedback
         <span wire:loading wire:target="toggleForm" class="animate-spin h-5 w-5 inline-block ml-2">⏳</span>
+    </button> -->
+    <button 
+        wire:click="toggleForm" 
+        class="fixed bottom-6 right-6 bg-blue-600 text-white 
+           px-6 py-3 text-sm md:text-base
+           rounded-full shadow-lg 
+           hover:bg-blue-700 transition 
+           z-50 font-semibold 
+           animate-shadow-pulse">
+
+        Feedback
+        <span wire:loading wire:target="toggleForm" class="animate-spin h-4 w-4 inline-block ml-2">⏳</span>
     </button>
+
 
     <!-- Feedback Form -->
     @if ($showForm)
