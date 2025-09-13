@@ -20,9 +20,9 @@
             <div>
                 <h3 class="text-lg font-medium">Contact</h3>
                 <ul class="mt-2 space-y-2">
-                    <li><a href="tel:+12125612600" class="inline-block text-gray-400 hover:text-white hover:scale-110 transition-transform duration-300">
+                    <!-- <li><a href="tel:+12125612600" class="inline-block text-gray-400 hover:text-white hover:scale-110 transition-transform duration-300">
                         Phone: (281) 541-9224
-                    </a></li>
+                    </a></li> -->
                     <li><a href="mailto:limoatdoor@gmail.com" class="inline-block text-gray-400 hover:text-white hover:scale-110 transition-transform duration-300">
                         Email: limoatdoor@gmail.com
                     </a></li>

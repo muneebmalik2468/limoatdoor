@@ -220,23 +220,57 @@
                 if (pickupInput && dropoffInput) {
                     const pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput, {
                         types: ['geocode'], // Limit to addresses
+                        componentRestrictions: { country: 'us' }
                     });
                     const dropoffAutocomplete = new google.maps.places.Autocomplete(dropoffInput, {
                         types: ['geocode'],
+                        componentRestrictions: { country: 'us' }
                     });
 
-                    // Update Livewire when place selected
+                    // code or pickup anywhere in the world
+                    // pickupAutocomplete.addListener('place_changed', function() {
+                    //     const place = pickupAutocomplete.getPlace();
+                    //     const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
+                    //     if (component) component.set('pickup_location', place.formatted_address || pickupInput.value);
+                    //     calculateDistance();
+                    // });
                     pickupAutocomplete.addListener('place_changed', function() {
                         const place = pickupAutocomplete.getPlace();
+                        if (!place.address_components) {
+                            return; // No details, invalid selection
+                        }
+
+                        // Extract city (locality)
+                        let city = '';
+                        for (let component of place.address_components) {
+                            if (component.types.includes('locality')) {
+                                city = component.long_name;
+                                break;
+                            }
+                        }
+
+                        // Validate city
+                        const allowedCities = ['Dallas', 'Chicago', 'Houston'];
+                        if (!allowedCities.includes(city)) {
+                            pickupInput.value = '';
+                            alert(`Currently we provide pickup only from these cities: ${allowedCities.join(', ')}. Please select a valid address.`);
+                            return; // Prevent updating Livewire
+                        }
+
+                        // Valid: Update Livewire
                         const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
-                        if (component) component.set('pickup_location', place.formatted_address || pickupInput.value);
+                        if (component) {
+                            component.set('pickup_location', place.formatted_address || pickupInput.value);
+                        }
                         calculateDistance();
                     });
 
                     dropoffAutocomplete.addListener('place_changed', function() {
                         const place = dropoffAutocomplete.getPlace();
                         const component = Livewire.find(dropoffInput.closest('[wire\\:id]').getAttribute('wire:id'));
-                        if (component) component.set('dropoff_location', place.formatted_address || dropoffInput.value);
+                        if (component){
+                            component.set('dropoff_location', place.formatted_address || dropoffInput.value);
+                        }
                         calculateDistance();
                     });
                 }

@@ -81,9 +81,9 @@
                 If you have questions or concerns about this Privacy Policy or wish to exercise your rights, please contact us:
             </p>
             <ul class="mt-4">
-                <li><strong>Phone:</strong> <a href="tel:+12125612600" class="text-blue-600 hover:underline">(281) 541-9224</a></li>
+                <!-- <li><strong>Phone:</strong> <a href="tel:+12125612600" class="text-blue-600 hover:underline">(281) 541-9224</a></li> -->
                 <li><strong>Email:</strong> <a href="mailto:limoatdoor@gmail.com" class="text-blue-600 hover:underline">limoatdoor@gmail.com</a></li>
-                <li><strong>Address:</strong> 123 Travel Lane, New York, NY 10001</li>
+                <li><strong>Address:</strong> 3040 fm 1960 #144, Houston, TX 77073.</li>
             </ul>
 
             <h2 class="text-2xl font-semibold mt-10 mb-4">11. Updates to This Policy</h2>

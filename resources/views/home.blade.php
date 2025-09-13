@@ -20,13 +20,15 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.key') }}&libraries=places"></script>
 </head>
 <body class="font-sans antialiased">
     <div class="flex flex-col min-h-screen">
         <!-- Navbar -->
         @include('layouts.navigation')
         <!-- Hero Section -->
-        <section class="bg-gray-100 py-20">
+        <livewire:booking-wizard />
+        <!-- <section class="bg-gray-100 py-20">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                 <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">Global Chauffeur & Travel Services</h1>
                 <p class="mt-4 text-lg text-gray-600">Book your luxury ride in over 1,000 cities worldwide with ease and comfort.</p>
@@ -34,10 +36,10 @@
                     Book Now
                 </a>
             </div>
-        </section>
+        </section> -->
 
         <!-- Features Section (Inspired by "THE ICS DIFFERENCE") -->
-        <section class="py-16 bg-white">
+        <section class="py-16 bg-gray-50">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-gray-900 text-center">Why Choose Us?</h2>
                 <div class="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

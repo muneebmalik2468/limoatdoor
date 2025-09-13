@@ -195,7 +195,7 @@ class BookingWizard extends Component
         ]);
 
         try {
-            Mail::to(env('MAIL_FROM_ADDRESS'))->send(new BookingNotification($booking));
+            Mail::to(env('ADMIN_EMAIL'))->send(new BookingNotification($booking));
         } catch (\Exception $e) {
             Log::error('Failed to send booking notification: ' . $e->getMessage());
         }
@@ -204,7 +204,7 @@ class BookingWizard extends Component
         if ($userEmail) {
             try {
                 Mail::to($userEmail)->send(new BookingNotification($booking));
-                // Log::info('User email sent successfully to ' . $userEmail . ' for booking ID: ' . $booking->id);
+                Log::info('User email sent successfully to ' . $userEmail . ' for booking ID: ' . $booking->id);
             } catch (\Exception $e) {
                 Log::error('Failed to send user booking notification to ' . $userEmail . ': ' . $e->getMessage());
             }

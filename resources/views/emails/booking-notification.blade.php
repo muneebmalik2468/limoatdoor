@@ -41,6 +41,10 @@
             <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->trip_type ? 'Point to Point' : 'Hourly' }}</td>
         </tr>
         <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">Fare</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">${{ $booking->price ?? 'N/A' }}</td>
+        </tr>
+        <tr>
             <td style="padding: 8px; border: 1px solid #ddd;">Notes</td>
             <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->notes ?? 'None' }}</td>
         </tr>

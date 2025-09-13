@@ -28,9 +28,15 @@ class ContactFormSubmission extends Mailable
 
     public function build()
     {
-        return $this->from($this->email, $this->name)
-                    ->subject('New Contact Form Submission: ' . $this->subject)
-                    ->view('emails.contact-submission');
+        return $this->from(config('mail.from.address'), config('mail.from.name'))
+                ->replyTo($this->email, $this->name)
+                ->subject('New Contact Form Submission: ' . $this->subject)
+                ->view('emails.contact-submission');
+
+        // this works for gmail account smtp configurations
+        // return $this->from($this->email, $this->name)
+        //             ->subject('New Contact Form Submission: ' . $this->subject)
+        //             ->view('emails.contact-submission');
     }
 
 }
