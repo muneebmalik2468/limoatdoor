@@ -16,6 +16,10 @@ return [
 
     'default' => env('MAIL_MAILER', 'log'),
 
+    // config/mail.php
+    'admin_email' => env('ADMIN_EMAIL', 'info@limoatdoor.com'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Mailer Configurations

@@ -195,7 +195,7 @@ class BookingWizard extends Component
         ]);
 
         try {
-            Mail::to(env('ADMIN_EMAIL'))->send(new BookingNotification($booking));
+            Mail::to(config('mail.admin_email'))->send(new BookingNotification($booking));
         } catch (\Exception $e) {
             Log::error('Failed to send booking notification: ' . $e->getMessage());
         }
