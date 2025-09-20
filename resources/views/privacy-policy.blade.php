@@ -81,9 +81,9 @@
                 If you have questions or concerns about this Privacy Policy or wish to exercise your rights, please contact us:
             </p>
             <ul class="mt-4">
-                <!-- <li><strong>Phone:</strong> <a href="tel:+12125612600" class="text-blue-600 hover:underline">(281) 541-9224</a></li> -->
-                <li><strong>Email:</strong> <a href="mailto:limoatdoor@gmail.com" class="text-blue-600 hover:underline">limoatdoor@gmail.com</a></li>
-                <li><strong>Address:</strong> 3040 fm 1960 #144, Houston, TX 77073.</li>
+                {{-- <!-- <li><strong>Phone:</strong> <a href="tel:+12125612600" class="text-blue-600 hover:underline">(281) 541-9224</a></li> --> --}}
+                <li><strong>Email:</strong> <a href="mailto:info@limoatdoor.com" class="text-blue-600 hover:underline">info@limoatdoor.com</a></li>
+                {{-- <!-- <li><strong>Address:</strong> 3040 fm 1960 #144, Houston, TX 77073.</li> --> --}}
             </ul>
 
             <h2 class="text-2xl font-semibold mt-10 mb-4">11. Updates to This Policy</h2>
@@ -91,7 +91,7 @@
                 We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date.
             </p>
 
-            <p class="mt-10 text-sm text-gray-500">Last Updated: September 7, 2025</p>
+            <p class="mt-10 text-sm text-gray-500">Last Updated: September 21, 2025</p>
         </div>
     </div>
 </section>

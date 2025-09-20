@@ -34,5 +34,6 @@
                 {{ $slot }}
             </div>
         </div>
+        @include('components.scripts.password-toggle-script')
     </body>
 </html>

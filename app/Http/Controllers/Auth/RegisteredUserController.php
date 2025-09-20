@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Carbon;
+use App\Mail\VerifyEmail;
+use Illuminate\Support\Facades\Mail;
+
 
 class RegisteredUserController extends Controller
 {
@@ -41,10 +46,23 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        // event(new Registered($user));
+        $verificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            Carbon::now()->addMinutes(60),
+            [
+                'id' => $user->getKey(),
+                'hash' => sha1($user->getEmailForVerification()),
+            ]
+        );
+
+        Mail::to($user->email)->send(new VerifyEmail($verificationUrl, $user));
+
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->intended(route('verification.notice'));
+
+        // return redirect(route('dashboard', absolute: false));
     }
 }

@@ -11,8 +11,9 @@ use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 use App\Mail\ResetPasswordEmail; // Add this import
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
