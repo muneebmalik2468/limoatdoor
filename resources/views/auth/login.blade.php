@@ -16,12 +16,12 @@
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
             <div class="relative">
-                <x-text-input id="password" class="block mt-1 w-full pr-10 lg:pr-2"
+                <x-text-input id="password" class="block mt-1 w-full pr-2"
                                 type="password"
                                 name="password"
                                 required autocomplete="current-password" />
                 <button type="button" onclick="togglePassword('password', this)"
-                        class="absolute inset-y-0 right-0 px-3 flex items-center text-sm text-gray-600 focus:outline-none lg:hidden">
+                        class="absolute inset-y-0 right-0 px-3 flex items-center text-sm text-gray-600 focus:outline-none">
                     <!-- Eye (visible) icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
