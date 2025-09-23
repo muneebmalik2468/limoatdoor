@@ -42,6 +42,11 @@
                 <div>
                     <label for="pickup_datetime" class="block text-sm font-medium text-gray-700">Pickup Date & Time *</label>
                     <input type="datetime-local" wire:model="pickup_datetime" id="pickup_datetime" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                    <button type="button"
+                            wire:click="$refresh" 
+                            class="hidden md:inline-block mt-2 px-3 py-1 bg-blue-500 text-white text-sm rounded-md hover:bg-blue-600">
+                        Set
+                    </button>
                     @error('pickup_datetime') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <p><strong>Distance:</strong> {{ $distanceText ?: 'Add Pickup & Dropoff to calculate distance...' }}</p>
@@ -213,6 +218,128 @@
         
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                const pickupInput = document.getElementById('pickup_location');
+                const dropoffInput = document.getElementById('dropoff_location');
+
+                if (pickupInput && dropoffInput) {
+                    const pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput, {
+                        types: ['geocode'],
+                        componentRestrictions: { country: 'us' }
+                    });
+                    const dropoffAutocomplete = new google.maps.places.Autocomplete(dropoffInput, {
+                        types: ['geocode'],
+                        componentRestrictions: { country: 'us' }
+                    });
+
+                    // Allowed cities with coordinates + radius (50 km)
+                    const allowedCities = [
+                        { name: "Dallas", lat: 32.7767, lng: -96.7970, radius: 70000 }, // 70 km
+                        { name: "Chicago", lat: 41.8781, lng: -87.6298, radius: 70000 },
+                        { name: "Houston", lat: 29.7604, lng: -95.3698, radius: 70000 }
+                    ];
+
+                    // Haversine formula for distance in meters
+                    function getDistance(lat1, lng1, lat2, lng2) {
+                        const R = 6371e3; // Earth radius (meters)
+                        const toRad = deg => deg * Math.PI / 180;
+                        const dLat = toRad(lat2 - lat1);
+                        const dLng = toRad(lng2 - lng1);
+                        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                        return R * c; // in meters
+                    }
+
+                    pickupAutocomplete.addListener('place_changed', function() {
+                        const place = pickupAutocomplete.getPlace();
+                        if (!place.geometry) {
+                            return;
+                        }
+
+                        const lat = place.geometry.location.lat();
+                        const lng = place.geometry.location.lng();
+
+                        // Check against allowed cities
+                        let valid = false;
+                        let nearestCity = null;
+
+                        for (let city of allowedCities) {
+                            const distance = getDistance(lat, lng, city.lat, city.lng);
+                            if (distance <= city.radius) {
+                                valid = true;
+                                nearestCity = city.name;
+                                break;
+                            }
+                        }
+
+                        if (!valid) {
+                            pickupInput.value = '';
+                            alert(`Currently we provide pickup only within Chicago, Houston and Dallas TX. Please select a valid address.`);
+                            return;
+                        }
+
+                        // ✅ Valid: update Livewire
+                        const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
+                        if (component) {
+                            component.set('pickup_location', place.formatted_address || pickupInput.value);
+                        }
+                        calculateDistance();
+                    });
+
+                    dropoffAutocomplete.addListener('place_changed', function() {
+                        const place = dropoffAutocomplete.getPlace();
+                        const component = Livewire.find(dropoffInput.closest('[wire\\:id]').getAttribute('wire:id'));
+                        if (component){
+                            component.set('dropoff_location', place.formatted_address || dropoffInput.value);
+                        }
+                        calculateDistance();
+                    });
+                }
+
+                function calculateDistance() {
+                    const pickup = document.getElementById('pickup_location').value;
+                    const dropoff = document.getElementById('dropoff_location').value;
+
+                    if (pickup && dropoff) {
+                        const service = new google.maps.DistanceMatrixService();
+
+                        service.getDistanceMatrix({
+                            origins: [pickup],
+                            destinations: [dropoff],
+                            travelMode: 'DRIVING',
+                            unitSystem: google.maps.UnitSystem.IMPERIAL,
+                        }, function(response, status) {
+                            if (status === 'OK') {
+                                const result = response.rows[0].elements[0];
+
+                                const distanceText = result.distance.text;
+                                const durationText = result.duration.text;
+
+                                const distanceInMiles = parseFloat(result.distance.value / 1609.34);
+                                const durationInMinutes = parseInt(result.duration.value / 60);
+
+                                const distanceDisplay = `${distanceText}, ${durationText}`;
+
+                                const component = Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
+                                if (component) {
+                                    component.call('updateDistance', {
+                                        text: distanceDisplay,
+                                        miles: distanceInMiles,
+                                        duration: durationInMinutes
+                                    });
+                                }
+                            } else {
+                                console.error('Distance Matrix error: ' + status);
+                            }
+                        });
+                    }
+                }
+            });
+        </script>
+
+        <!-- <script>
+            document.addEventListener('DOMContentLoaded', function() {
                 // Places Autocomplete for pickup and dropoff
                 const pickupInput = document.getElementById('pickup_location');
                 const dropoffInput = document.getElementById('dropoff_location');
@@ -315,7 +442,7 @@
                 }
 
             });
-        </script>
+        </script> -->
         <script>
             document.addEventListener('livewire:init', () => {
                 // Function to check and focus on phone error
