@@ -13,6 +13,10 @@
     @if (Auth::user()->bookings->isEmpty())
         <p class="text-gray-600">You have no bookings yet. <a href="{{ route('book') }}" class="text-blue-600 hover:underline">Book now!</a></p>
     @else
+        <!-- Static Note -->
+        <div class="mb-6 p-4 bg-yellow-100 text-yellow-800 rounded-md border border-yellow-300">
+            <strong>Note:</strong> You can cancel your booking within 8 hours after making the booking.
+        </div>
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
                 <thead class="bg-gray-50">
@@ -58,10 +62,18 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 @if($booking->status === 'pending')
-                                    <form action="{{ route('bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
-                                        @csrf
-                                        <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Cancel</button>
-                                    </form>
+                                    @php
+                                        $canCancel = $booking->created_at->gt(now()->subHours(8));
+                                    @endphp
+
+                                    @if($canCancel)
+                                        <form action="{{ route('bookings.cancel', $booking) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                            @csrf
+                                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium">Cancel</button>
+                                        </form>
+                                    @else
+                                        <span class="text-gray-400 text-sm italic">Cancellation time expired</span>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

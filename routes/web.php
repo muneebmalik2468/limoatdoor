@@ -16,7 +16,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/book', function () {
-    return view('book'); // Create resources/views/book.blade.php with <livewire:booking-wizard />
+    return view('book');
 })->name('book');
 
 Route::get('/bookings/success', function () {
@@ -38,10 +38,6 @@ Route::get('/privacy-policy', function () {
 
 //     return 'Email sent!';
 // });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function () {

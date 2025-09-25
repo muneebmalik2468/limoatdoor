@@ -279,7 +279,7 @@
                             return;
                         }
 
-                        // ✅ Valid: update Livewire
+                        // update Livewire
                         const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
                         if (component) {
                             component.set('pickup_location', place.formatted_address || pickupInput.value);
