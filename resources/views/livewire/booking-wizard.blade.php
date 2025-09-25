@@ -128,14 +128,14 @@
                         <div class="mt-4 p-4 border rounded bg-gray-100">
                             <h3 class="font-semibold text-lg">Estimated Fare (Point-to-Point)</h3>
                             <p>Distance: {{ number_format($distanceInMiles, 2) }} miles</p>
-                            <p>Rate per mile: ${{ number_format(optional($vehicles->find($vehicle_id))->base_rate, 2) }}</p>
+                            {{-- <!-- <p>Rate per mile: ${{ number_format(optional($vehicles->find($vehicle_id))->base_rate, 2) }}</p> --> --}}
                             <p class="font-bold">Total Price: ${{ number_format($calculated_distance_price, 2) }}</p>
                         </div>
                     @else
                         <div class="mt-4 p-4 border rounded bg-gray-100">
                             <h3 class="font-semibold text-lg">Estimated Fare (Hourly)</h3>
                             <p>Estimated Hours: {{ $estimated_hours ?? round($durationInMinutes / 60,2) }} hrs</p>
-                            <p>Hourly Rate: ${{ number_format(optional($vehicles->find($vehicle_id))->hourly_rate, 2) }}</p>
+                            {{-- <!-- <p>Hourly Rate: ${{ number_format(optional($vehicles->find($vehicle_id))->hourly_rate, 2) }}</p> --> --}}
                             <p class="font-bold">Total Price: ${{ number_format($calculated_time_price, 2) }}</p>
                         </div>
                     @endif
@@ -153,7 +153,7 @@
                     </label>
                     @error('with_pet') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
-                <div>
+                {{-- <!-- <div>
                     <label for="iatan_account" class="block text-sm font-medium text-gray-700">IATAN # / Account # (Optional)</label>
                     <input type="text" wire:model="iatan_account" id="iatan_account" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="IATAN or account number">
                     @error('iatan_account') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
@@ -162,7 +162,7 @@
                     <label for="ta_fee" class="block text-sm font-medium text-gray-700">TA Fee USD (Optional)</label>
                     <input type="number" wire:model="ta_fee" id="ta_fee" min="0" max="1000" step="0.01" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="TA fee in USD">
                     @error('ta_fee') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                </div>
+                </div> --> --}}
                 <div>
                     <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
                     <textarea wire:model="notes" id="notes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Additional notes"></textarea>
@@ -191,10 +191,10 @@
                     @if($vehicle_id)
                         <img src="{{ asset('storage/' . $vehicles->find($vehicle_id)->image) }}" alt="{{ $vehicles->find($vehicle_id)->name }}" class="h-24 w-auto rounded-md">
                     @endif
-                    <!-- <p><strong>Estimated Hours:</strong> {{ $estimated_hours ?? 'N/A' }}</p> -->
+                    {{-- <!-- <p><strong>Estimated Hours:</strong> {{ $estimated_hours ?? 'N/A' }}</p> --> --}}
                     <p><strong>With Pet:</strong> {{ $with_pet ? 'Yes' : 'No' }}</p>
-                    <!-- <p><strong>IATAN/Account:</strong> {{ $iatan_account ?? 'N/A' }}</p> -->
-                    <!-- <p><strong>TA Fee:</strong> ${{ $ta_fee ?? 'N/A' }}</p> -->
+                    {{-- <!-- <p><strong>IATAN/Account:</strong> {{ $iatan_account ?? 'N/A' }}</p> --> --}}
+                    {{-- <!-- <p><strong>TA Fee:</strong> ${{ $ta_fee ?? 'N/A' }}</p> --> --}}
                     <p><strong>Notes:</strong> {{ $notes ?? 'None' }}</p>
                     @if(!auth()->check())
                         <div>
@@ -337,112 +337,7 @@
                 }
             });
         </script>
-
-        <!-- <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                // Places Autocomplete for pickup and dropoff
-                const pickupInput = document.getElementById('pickup_location');
-                const dropoffInput = document.getElementById('dropoff_location');
-
-                if (pickupInput && dropoffInput) {
-                    const pickupAutocomplete = new google.maps.places.Autocomplete(pickupInput, {
-                        types: ['geocode'], // Limit to addresses
-                        componentRestrictions: { country: 'us' }
-                    });
-                    const dropoffAutocomplete = new google.maps.places.Autocomplete(dropoffInput, {
-                        types: ['geocode'],
-                        componentRestrictions: { country: 'us' }
-                    });
-
-                    // code or pickup anywhere in the world
-                    // pickupAutocomplete.addListener('place_changed', function() {
-                    //     const place = pickupAutocomplete.getPlace();
-                    //     const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
-                    //     if (component) component.set('pickup_location', place.formatted_address || pickupInput.value);
-                    //     calculateDistance();
-                    // });
-                    pickupAutocomplete.addListener('place_changed', function() {
-                        const place = pickupAutocomplete.getPlace();
-                        if (!place.address_components) {
-                            return; // No details, invalid selection
-                        }
-
-                        // Extract city (locality)
-                        let city = '';
-                        for (let component of place.address_components) {
-                            if (component.types.includes('locality')) {
-                                city = component.long_name;
-                                break;
-                            }
-                        }
-
-                        // Validate city
-                        const allowedCities = ['Dallas', 'Chicago', 'Houston'];
-                        if (!allowedCities.includes(city)) {
-                            pickupInput.value = '';
-                            alert(`Currently we provide pickup only from these cities: ${allowedCities.join(', ')}. Please select a valid address.`);
-                            return; // Prevent updating Livewire
-                        }
-
-                        // Valid: Update Livewire
-                        const component = Livewire.find(pickupInput.closest('[wire\\:id]').getAttribute('wire:id'));
-                        if (component) {
-                            component.set('pickup_location', place.formatted_address || pickupInput.value);
-                        }
-                        calculateDistance();
-                    });
-
-                    dropoffAutocomplete.addListener('place_changed', function() {
-                        const place = dropoffAutocomplete.getPlace();
-                        const component = Livewire.find(dropoffInput.closest('[wire\\:id]').getAttribute('wire:id'));
-                        if (component){
-                            component.set('dropoff_location', place.formatted_address || dropoffInput.value);
-                        }
-                        calculateDistance();
-                    });
-                }
-
-                function calculateDistance() {
-                    const pickup = document.getElementById('pickup_location').value;
-                    const dropoff = document.getElementById('dropoff_location').value;
-
-                    if (pickup && dropoff) {
-                        const service = new google.maps.DistanceMatrixService();
-
-                        service.getDistanceMatrix({
-                            origins: [pickup],
-                            destinations: [dropoff],
-                            travelMode: 'DRIVING',
-                            unitSystem: google.maps.UnitSystem.IMPERIAL, // For miles
-                        }, function(response, status) {
-                            if (status === 'OK') {
-                                const result = response.rows[0].elements[0];
-
-                                const distanceText = result.distance.text;     // e.g., "12.5 mi"
-                                const durationText = result.duration.text;     // e.g., "20 mins"
-
-                                const distanceInMiles = parseFloat(result.distance.value / 1609.34); // meters to miles
-                                const durationInMinutes = parseInt(result.duration.value / 60); // seconds to minutes
-
-                                const distanceDisplay = `${distanceText}, ${durationText}`;
-
-                                const component = Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
-                                if (component) {
-                                    component.call('updateDistance', {
-                                        text: distanceDisplay,
-                                        miles: distanceInMiles,
-                                        duration: durationInMinutes
-                                    });
-                                }
-                            } else {
-                                console.error('Distance Matrix error: ' + status);
-                            }
-                        });
-                    }
-                }
-
-            });
-        </script> -->
+        
         <script>
             document.addEventListener('livewire:init', () => {
                 // Function to check and focus on phone error

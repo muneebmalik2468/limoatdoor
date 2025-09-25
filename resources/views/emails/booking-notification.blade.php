@@ -29,6 +29,10 @@
             <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->dropoff_location }}</td>
         </tr>
         <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">Contact No</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->phone }}</td>
+        </tr>
+        <tr>
             <td style="padding: 8px; border: 1px solid #ddd;">Vehicle</td>
             <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->vehicle->name ?? 'N/A' }}</td>
         </tr>
