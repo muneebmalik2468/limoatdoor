@@ -107,36 +107,34 @@
                     @error('luggage') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
-                    <label for="vehicle_id" class="block text-sm font-medium text-gray-700">Select Vehicle *</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                        @foreach($vehicles as $vehicle)
-                            <div wire:click="$set('vehicle_id', {{ $vehicle->id }})" class="cursor-pointer p-4 border {{ $vehicle_id == $vehicle->id ? 'border-blue-500 bg-blue-50' : 'border-gray-300' }} rounded-md">
-                                <img src="{{ asset('storage/' . $vehicle->image) }}" alt="{{ $vehicle->name }}" class="h-24 w-auto rounded-md mb-2">
-                                <p class="font-medium">{{ $vehicle->name }} ({{ $vehicle->type }})</p>
-                                <p class="text-sm text-gray-600">Passengers: {{ $vehicle->passenger_capacity }}</p>
-                            </div>
-                        @endforeach
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Select Vehicle *</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                            @foreach($vehicles as $vehicle)
+                                <div wire:click="$set('vehicle_id', {{ $vehicle->id }})"
+                                    class="cursor-pointer p-4 border {{ $vehicle_id == $vehicle->id ? 'border-blue-500 bg-blue-50' : 'border-gray-300' }} rounded-md">
+                                    <img src="{{ asset('storage/'.$vehicle->image) }}" class="h-24 w-auto rounded-md mb-2">
+                                    <p class="font-medium">{{ $vehicle->name }} ({{ $vehicle->type }})</p>
+                                    <p class="text-sm text-gray-600">Capacity: {{ $vehicle->passenger_capacity }} passengers / {{ $vehicle->luggage_capacity }} luggage</p>
+                                </div>
+                            @endforeach
+                        </div>
+                        @error('vehicle_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    @error('vehicle_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
-                    <!-- Vehicle Image Preview -->
+
+                    {{-- NEW: Required Vehicles --}}
                     @if($vehicle_id)
-                        <div class="mt-2">
-                            <img src="{{ asset('storage/' . $vehicles->find($vehicle_id)->image) }}" alt="{{ $vehicles->find($vehicle_id)->name }}" class="h-24 w-auto rounded-md">
-                        </div>
-                    @endif
-                    @if($trip_type)
                         <div class="mt-4 p-4 border rounded bg-gray-100">
-                            <h3 class="font-semibold text-lg">Estimated Fare (Point-to-Point)</h3>
-                            <p>Distance: {{ number_format($distanceInMiles, 2) }} miles</p>
-                            {{-- <!-- <p>Rate per mile: ${{ number_format(optional($vehicles->find($vehicle_id))->base_rate, 2) }}</p> --> --}}
-                            <p class="font-bold">Total Price: ${{ number_format($calculated_distance_price, 2) }}</p>
-                        </div>
-                    @else
-                        <div class="mt-4 p-4 border rounded bg-gray-100">
-                            <h3 class="font-semibold text-lg">Estimated Fare (Hourly)</h3>
-                            <p>Estimated Hours: {{ $estimated_hours ?? round($durationInMinutes / 60,2) }} hrs</p>
-                            {{-- <!-- <p>Hourly Rate: ${{ number_format(optional($vehicles->find($vehicle_id))->hourly_rate, 2) }}</p> --> --}}
-                            <p class="font-bold">Total Price: ${{ number_format($calculated_time_price, 2) }}</p>
+                            <h3 class="font-semibold text-lg">Selected Vehicle</h3>
+                            <p>{{ $vehicles->find($vehicle_id)->name ?? 'Vehicle' }} × {{ $vehicle_count ?? 1 }}</p>
+
+                            @if($trip_type)
+                                <p>Distance: {{ number_format($distanceInMiles, 2) }} miles</p>
+                                <p class="font-bold">Total Price: ${{ number_format($total_price, 2) }}</p>
+                            @else
+                                <p>Estimated Hours: {{ $estimated_hours ?? round($durationInMinutes/60,2) }}</p>
+                                <p class="font-bold">Total Price: ${{ number_format($total_price, 2) }}</p>
+                            @endif
                         </div>
                     @endif
 
@@ -178,6 +176,11 @@
                 </div>
             @elseif($step === 3)
                 <h2 class="text-2xl font-bold text-gray-900">Step 3: Review and Confirm</h2>
+                @php
+                    $vehicle = $vehicles->find($vehicle_id);
+                    $capacity = $vehicle?->passenger_capacity ?? 1;
+                    $reqVehicles = ceil($passengers / max(1,$capacity));
+                @endphp
                 <div class="space-y-4">
                     <p><strong>Pickup:</strong> {{ $pickup_location }} at {{ $pickup_datetime }}</p>
                     <p><strong>Dropoff:</strong> {{ $dropoff_location }}</p>
@@ -187,7 +190,8 @@
                     <p><strong>Luggage:</strong> {{ $luggage }}</p>
                     <p><strong>Travel Type:</strong> {{ $trip_type ? 'Point to Point' : 'Hourly' }}</p>
                     <p><strong>Total Price:</strong> ${{ number_format($total_price, 2) }}</p>
-                    <p><strong>Vehicle:</strong> {{ $vehicles->find($vehicle_id)->name ?? 'Not selected' }}</p>
+                    {{-- <!-- <p><strong>Vehicle:</strong> {{ $vehicles->find($vehicle_id)->name ?? 'Not selected' }}</p> --> --}}
+                    <p><strong>Vehicle:</strong> {{ $vehicle?->name }} × {{ $reqVehicles }}</p>
                     @if($vehicle_id)
                         <img src="{{ asset('storage/' . $vehicles->find($vehicle_id)->image) }}" alt="{{ $vehicles->find($vehicle_id)->name }}" class="h-24 w-auto rounded-md">
                     @endif

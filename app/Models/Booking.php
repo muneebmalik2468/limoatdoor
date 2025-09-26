@@ -29,6 +29,7 @@ class Booking extends Model
         'distance_in_miles',
         'duration_in_minutes',
         'price',
+        'vehicle_count',
     ];
 
     protected $casts = [

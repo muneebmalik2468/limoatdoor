@@ -72,6 +72,9 @@ class BookingsTable
                     ->label('Vehicle')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('vehicle_count')
+                    ->numeric()
+                    ->sortable(),
                 IconColumn::make('with_pet')
                     ->boolean(),
                 TextColumn::make('estimated_hours')

@@ -34,7 +34,7 @@
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;">Vehicle</td>
-            <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->vehicle->name ?? 'N/A' }}</td>
+            <td style="padding: 8px; border: 1px solid #ddd;">{{ $booking->vehicle->name ?? 'N/A' }} x {{$booking->vehicle_count}}</td>
         </tr>
         <tr>
             <td style="padding: 8px; border: 1px solid #ddd;">Passengers/Luggage</td>

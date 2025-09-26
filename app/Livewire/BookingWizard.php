@@ -36,6 +36,8 @@ class BookingWizard extends Component
     public $vehicles;
     public $trip_type = true;
     public $total_price = 0.00;
+    public $vehicle_count = 1;
+    public $requiredVehicles = 1;
 
 
     protected function rules()
@@ -87,6 +89,11 @@ class BookingWizard extends Component
         if ($this->step === 3 && $propertyName === 'guest_email') {
             $this->validateOnly($propertyName, $this->rules()[3]);
         }
+
+        // Recalculate whenever passengers/luggage change
+        if (in_array($propertyName, ['passengers','luggage','vehicle_id'])) {
+            $this->calculatePricing();
+        }
     }
 
     public function updatePhone($phone)
@@ -105,21 +112,18 @@ class BookingWizard extends Component
         $this->step--;
     }
 
-    // public function updateDistance($distance)
-    // {
-    //     $this->distanceText = $distance; // Update from JS dispatch
-    // }
+    
     public function updateDistance($data)
     {
         if (!is_array($data)) {
-            return; // or handle fallback
+            return;
         }
 
         $this->distanceText = $data['text'] ?? '';
         $this->distanceInMiles = $data['miles'] ?? 0;
         $this->durationInMinutes = $data['duration'] ?? 0;
 
-        $this->calculatePricing(); // Optional
+        $this->calculatePricing();
     }
 
 
@@ -139,22 +143,44 @@ class BookingWizard extends Component
     {
         $vehicle = $this->vehicles->find($this->vehicle_id);
         if (!$vehicle) {
+            $this->vehicle_count = 1;
             $this->calculated_distance_price = 0;
             $this->calculated_time_price = 0;
             $this->total_price = 0;
             return;
         }
 
+        // Determine required quantity
+        $passengerCapacity = data_get($vehicle, 'passenger_capacity') 
+            ?? data_get($vehicle, 'capacity') 
+            ?? 1;
+        $luggageCapacity = data_get($vehicle, 'luggage_capacity') 
+            ?? data_get($vehicle, 'luggage_limit') 
+            ?? 1;
+
+        // safety: avoid divide by zero
+        $passengerUnits = $passengerCapacity > 0 ? (int) ceil($this->passengers / $passengerCapacity) : 1;
+        $luggageUnits   = $luggageCapacity > 0 ? (int) ceil(max(0, $this->luggage) / $luggageCapacity) : 1;
+
+        // how many vehicles needed
+        $this->vehicle_count = max(1, $passengerUnits, $luggageUnits);
+
+        // Distance or hourly fare
         if ($this->trip_type) {
-            $this->calculated_distance_price = round($vehicle->base_rate * $this->distanceInMiles, 2);
+            // price PER vehicle
+            $perVehicleDistancePrice = round($vehicle->base_rate * $this->distanceInMiles, 2);
+            // multiply by vehicle_count
+            $this->calculated_distance_price = round($perVehicleDistancePrice * $this->vehicle_count, 2);
             $this->calculated_time_price = 0;
             $this->total_price = $this->calculated_distance_price;
         } else {
             $hours = round($this->durationInMinutes / 60, 2);
-            $this->calculated_time_price = round($vehicle->hourly_rate * $hours, 2);
+            $perVehicleHourly = round($vehicle->hourly_rate * $hours, 2);
+            $this->calculated_time_price = round($perVehicleHourly * $this->vehicle_count, 2);
             $this->calculated_distance_price = 0;
             $this->total_price = $this->calculated_time_price;
         }
+
     }
 
     public function updatedDistanceInMiles()
@@ -169,9 +195,7 @@ class BookingWizard extends Component
     {
         $this->validate(array_merge(...array_values($this->rules())));
 
-        $price = $this->trip_type
-        ? $this->calculated_distance_price
-        : $this->calculated_time_price;
+        $price = round($this->total_price, 2);
 
         $booking = Booking::create([
             'user_id' => Auth::id(),
@@ -181,6 +205,7 @@ class BookingWizard extends Component
             'passengers' => $this->passengers,
             'luggage' => $this->luggage,
             'vehicle_id' => $this->vehicle_id,
+            'vehicle_count'     => $this->vehicle_count,
             'estimated_hours' => $this->estimated_hours,
             'iatan_account' => $this->iatan_account,
             'ta_fee' => $this->ta_fee,
@@ -191,7 +216,7 @@ class BookingWizard extends Component
             'trip_type' => $this->trip_type,
             'distance_in_miles' => round($this->distanceInMiles, 2),
             'duration_in_minutes' => $this->durationInMinutes,
-            'price' => round($price, 2),
+            'price' => $price,
         ]);
 
         try {
