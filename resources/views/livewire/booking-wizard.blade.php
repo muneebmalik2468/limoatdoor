@@ -191,13 +191,15 @@
                     <p><strong>Passengers:</strong> {{ $passengers }}</p>
                     <p><strong>Luggage:</strong> {{ $luggage }}</p>
                     <p><strong>Travel Type:</strong> {{ $trip_type ? 'Point to Point' : 'Hourly' }}</p>
+                    @if(!$trip_type && !empty($estimated_hours))
+                        <p><strong>Required Hours:</strong> {{ $estimated_hours }}</p>
+                    @endif
                     <p><strong>Total Price:</strong> ${{ number_format($total_price, 2) }}</p>
                     {{-- <!-- <p><strong>Vehicle:</strong> {{ $vehicles->find($vehicle_id)->name ?? 'Not selected' }}</p> --> --}}
                     <p><strong>Vehicle:</strong> {{ $vehicle?->name }} × {{ $reqVehicles }}</p>
                     @if($vehicle_id)
                         <img src="{{ asset('storage/' . $vehicles->find($vehicle_id)->image) }}" alt="{{ $vehicles->find($vehicle_id)->name }}" class="h-24 w-auto rounded-md">
                     @endif
-                    {{-- <!-- <p><strong>Estimated Hours:</strong> {{ $estimated_hours ?? 'N/A' }}</p> --> --}}
                     <p><strong>With Pet:</strong> {{ $with_pet ? 'Yes' : 'No' }}</p>
                     {{-- <!-- <p><strong>IATAN/Account:</strong> {{ $iatan_account ?? 'N/A' }}</p> --> --}}
                     {{-- <!-- <p><strong>TA Fee:</strong> ${{ $ta_fee ?? 'N/A' }}</p> --> --}}
