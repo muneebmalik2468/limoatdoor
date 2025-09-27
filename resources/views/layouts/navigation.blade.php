@@ -27,7 +27,7 @@
 
             <!-- Desktop Nav -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="{{ route('book') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-bold hover:scale-110 transition-transform duration-300">Book Now</a>
+                {{-- <!-- <a href="{{ route('book') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-bold hover:scale-110 transition-transform duration-300">Book Now</a> --> --}}
                 <a href="{{ route('contact') }}" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-md font-bold hover:scale-110 transition-transform duration-300">Contact</a>
                 @auth
                     <span class="text-gray-700 text-sm font-medium">{{ Auth::user()->name }}</span>
@@ -45,7 +45,7 @@
 
         <!-- Mobile Nav -->
         <div x-show="open" class="md:hidden mt-2 mb-2 space-y-2">
-            <a href="{{ route('book') }}" class="block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium mx-3 hover:scale-110 transition-transform duration-300">Book Now</a>
+            {{-- <!-- <a href="{{ route('book') }}" class="block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium mx-3 hover:scale-110 transition-transform duration-300">Book Now</a> --> --}}
             <a href="{{ route('contact') }}" class="block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium mx-3 hover:scale-110 transition-transform duration-300">Contact</a>
             @auth
                 <span class="block text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium mx-3 hover:scale-110 transition-transform duration-300">{{ Auth::user()->name }}</span>

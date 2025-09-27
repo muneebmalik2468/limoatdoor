@@ -106,6 +106,13 @@
                     <input type="number" wire:model="luggage" id="luggage" min="0" max="50" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Number of luggage items">
                     @error('luggage') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
+                @if(!$trip_type)
+                    <div>
+                        <label for="estimated_hours" class="block text-sm font-medium text-gray-700">Required Hours</label>
+                        <input type="number" wire:model="estimated_hours" id="estimated_hours" min="1" max="24" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Estimated hours (optional)">
+                        @error('estimated_hours') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                    </div>
+                @endif
                 <div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Select Vehicle *</label>
@@ -132,17 +139,12 @@
                                 <p>Distance: {{ number_format($distanceInMiles, 2) }} miles</p>
                                 <p class="font-bold">Total Price: ${{ number_format($total_price, 2) }}</p>
                             @else
-                                <p>Estimated Hours: {{ $estimated_hours ?? round($durationInMinutes/60,2) }}</p>
+                                <p>Estimated Hours: {{ $estimated_hours ?: ceil($durationInMinutes / 60) }}</p>
                                 <p class="font-bold">Total Price: ${{ number_format($total_price, 2) }}</p>
                             @endif
                         </div>
                     @endif
 
-                </div>
-                <div>
-                    <label for="estimated_hours" class="block text-sm font-medium text-gray-700">Estimated Hours</label>
-                    <input type="number" wire:model="estimated_hours" id="estimated_hours" min="1" max="24" step="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Estimated hours (optional)">
-                    @error('estimated_hours') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="flex items-center">

@@ -54,6 +54,6 @@
         </tr>
     </table>
     
-    <p style="font-size: 0.9em; color: #777;">This email was sent from your Limo At Door system.</p>
+    <p style="font-size: 0.9em; color: #777;">This email was sent from Limo At Door system.</p>
 </body>
 </html>

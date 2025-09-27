@@ -81,16 +81,20 @@ class BookingForm
                     ->searchable()
                     ->required()
                     ->default(null),
+                TextInput::make('vehicle_count')
+                    ->numeric()
+                    ->minValue(1)
+                    ->default(1),
                 TextInput::make('estimated_hours')
                     ->numeric()
                     ->minValue(0)
                     ->default(null),
-                TextInput::make('iatan_account')
-                    ->default(null),
-                TextInput::make('ta_fee')
-                    ->numeric()
-                    ->minValue(0)
-                    ->default(null),
+                // TextInput::make('iatan_account')
+                //     ->default(null),
+                // TextInput::make('ta_fee')
+                //     ->numeric()
+                //     ->minValue(0)
+                //     ->default(null),
                 Toggle::make('with_pet')
                     ->required(),
                 Textarea::make('notes')

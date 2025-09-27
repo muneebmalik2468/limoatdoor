@@ -33,6 +33,9 @@ class VehiclesTable
                 TextColumn::make('hourly_rate')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('fixed_rate')
+                    ->numeric()
+                    ->sortable(),
                 IconColumn::make('is_available')
                     ->boolean(),
                 // ImageColumn::make('image'),

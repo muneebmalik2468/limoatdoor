@@ -45,6 +45,13 @@ class VehicleForm
                     ->step(0.01)
                     ->required(),
 
+                TextInput::make('fixed_rate')
+                    ->label('Fixed Rate')
+                    ->numeric()
+                    ->minValue(0)
+                    ->step(0.01)
+                    ->required(),
+
                 // TextInput::make('base_rate')
                 //     ->numeric()
                 //     ->minValue(0)

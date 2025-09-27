@@ -17,6 +17,7 @@ class Vehicle extends Model
         'description',
         'base_rate',
         'hourly_rate',
+        'fixed_rate',
         'is_available',
         'image',
     ];

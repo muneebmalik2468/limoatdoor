@@ -112,7 +112,7 @@ class BookingWizard extends Component
         $this->step--;
     }
 
-    
+
     public function updateDistance($data)
     {
         if (!is_array($data)) {
@@ -168,13 +168,36 @@ class BookingWizard extends Component
         // Distance or hourly fare
         if ($this->trip_type) {
             // price PER vehicle
-            $perVehicleDistancePrice = round($vehicle->base_rate * $this->distanceInMiles, 2);
+            // $perVehicleDistancePrice = round($vehicle->base_rate * $this->distanceInMiles, 2);
+
+            // Distance-based trip
+            if ($this->distanceInMiles <= 10) {
+                // Use fixed rate if distance is <= 10 miles
+                $perVehicleDistancePrice = round($vehicle->fixed_rate, 2);
+            } else {
+                // Use normal per-mile rate for >10 miles
+                $perVehicleDistancePrice = round($vehicle->base_rate * $this->distanceInMiles, 2);
+            }
+
             // multiply by vehicle_count
             $this->calculated_distance_price = round($perVehicleDistancePrice * $this->vehicle_count, 2);
             $this->calculated_time_price = 0;
             $this->total_price = $this->calculated_distance_price;
         } else {
-            $hours = round($this->durationInMinutes / 60, 2);
+            // Use round to calculate exact time
+            // $hours = round($this->durationInMinutes / 60, 2);
+            // Use ceil to always round UP to the next full hour
+            // $hours = ceil($this->durationInMinutes / 60);
+
+            // Base calculated hours (rounded UP)
+            $calculatedHours = ceil($this->durationInMinutes / 60);
+
+            // If user provided estimated_hours and it's greater, use that
+            if (!empty($this->estimated_hours) && $this->estimated_hours > $calculatedHours) {
+                $hours = (int) ceil($this->estimated_hours);
+            } else {
+                $hours = $calculatedHours;
+            }
             $perVehicleHourly = round($vehicle->hourly_rate * $hours, 2);
             $this->calculated_time_price = round($perVehicleHourly * $this->vehicle_count, 2);
             $this->calculated_distance_price = 0;
